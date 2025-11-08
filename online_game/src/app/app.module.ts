@@ -46,6 +46,7 @@ import { GuessWhoComponent } from './GuessWho/guess-who/guess-who.component';
 import { CharactersComponent } from './GuessWho/characters/characters.component';
 import { CharacterCardComponent } from './GuessWho/character-card/character-card.component';
 import { MapComponent } from './Risk/map/map.component';
+import { CountriesComponent } from './Quiz-Game/countries/countries.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { MapComponent } from './Risk/map/map.component';
     GuessWhoComponent,
     CharactersComponent,
     CharacterCardComponent,
-    MapComponent
+    MapComponent,
+    CountriesComponent
 
   ],
   imports: [

@@ -25,6 +25,7 @@ namespace Online_Game_API
         public static _Question CurrentQuestion;
         public static List<string> CurrentAnswers = new List<string>();
         public static Stopwatch stopwatch = new Stopwatch();
+        //public static string CurrentRound; 
 
         /* 25 Card Game */
         public static Card TrumpCard;
@@ -129,52 +130,66 @@ namespace Online_Game_API
 
         }
 
+        
 
         //QUIZ
 
         public async void QuestionStart() {
+
             if (session.CurrentRound == 1)
             {
+                session.RoundName = "Countries";
+                await Clients.All.DisplayNewRound("Countries"); 
+                Thread.Sleep(2000);
+                await Clients.All.DisplayNewRound("");
+            }
+            else if (session.CurrentRound == 6)
+            {
+                session.RoundName = "Musicals & Theatre";
+                await Clients.All.DisplayNewRound("Musicals & Theatre");
+                Thread.Sleep(2000);
+                await Clients.All.DisplayNewRound("");
+            }
+            else if (session.CurrentRound == 11)
+            {
+                session.RoundName = "General Knowledge";
                 await Clients.All.DisplayNewRound("General Knowledge");
                 Thread.Sleep(2000);
                 await Clients.All.DisplayNewRound("");
             }
-            if (session.CurrentRound == 5)
-            {
-                await Clients.All.DisplayNewRound("Musicals");
-                Thread.Sleep(2000);
-                await Clients.All.DisplayNewRound("");
-            }
-            else if (session.CurrentRound == 10)
-            {
-                await Clients.All.DisplayNewRound("Countries");
-                Thread.Sleep(2000);
-                await Clients.All.DisplayNewRound("");
-            }
 
-            GetNewQuestion();
+            if (session.RoundName == "Countries")
+                GetCountryQuestion();
+            else
+                GetNewQuestion();
         }
         public async void QuestionEnd()
         {
             AddScores();
-
-            await Clients.All.DisplayMessage("Answer:" + CurrentQuestion.Correct_answer);
-            await Clients.All.DisplayCorrectAnswer(getAnswerLetter(CurrentQuestion.Correct_answer));
-
-            await Clients.All.DisplayPowerUps(PowerUps);
-            if (session.CurrentRound % 1 == 0)
-            {
-                await Clients.All.ToggleScoreboard();
-                Thread.Sleep(8000);
-                await Clients.All.ToggleScoreboard();
+            if (session.RoundName == "Countries") { 
+                await Clients.All.DisplayMessage("Answer:" + CurrentQuestion.Correct_answer);
+                //TODO: Display correct country
             }
             else
-                Thread.Sleep(5000);
+            {
+                await Clients.All.DisplayMessage("Answer:" + CurrentQuestion.Correct_answer);
+                await Clients.All.DisplayCorrectAnswer(getAnswerLetter(CurrentQuestion.Correct_answer));
 
-            OnReset();
-            session.CurrentRound += 1;
-            await Clients.All.DisplayPowerUps(PowerUps);
-            await Clients.All.DisplayPlayers(ConnectedUsers);
+                await Clients.All.DisplayPowerUps(PowerUps);
+                if (session.CurrentRound % 5 == 0)
+                {
+                    await Clients.All.ToggleScoreboard();
+                    Thread.Sleep(8000);
+                    await Clients.All.ToggleScoreboard();
+                }
+                else
+                    Thread.Sleep(5000);
+
+                OnReset();
+                session.CurrentRound += 1;
+                await Clients.All.DisplayPowerUps(PowerUps);
+                await Clients.All.DisplayPlayers(ConnectedUsers);
+            }
 
 
             QuestionStart();
@@ -189,10 +204,44 @@ namespace Online_Game_API
                new MediaTypeWithQualityHeaderValue("application/json"));
 
             string parameters = "?amount=1&type=multiple";
-            if (session.CurrentRound > 5)
-            {
+            if (session.RoundName == "General Knowledge")
+                parameters += "&category=9";
+            else if (session.RoundName == "Books")
+                parameters += "&category=10";
+            else if (session.RoundName == "Films")
+                parameters += "&category=11";
+            else if (session.RoundName == "Music")
                 parameters += "&category=12";
-            }
+            else if (session.RoundName == "Musicals & Theatre")
+                parameters += "&category=13";
+            else if (session.RoundName == "TV")
+                parameters += "&category=14";
+            else if (session.RoundName == "Video Games")
+                parameters += "&category=15";
+            else if (session.RoundName == "Board Games")
+                parameters += "&category=16";
+            else if (session.RoundName == "Science & Nature")
+                parameters += "&category=17";
+            else if (session.RoundName == "Computers")
+                parameters += "&category=18";
+            else if (session.RoundName == "Mathematics")
+                parameters += "&category=19";
+            else if (session.RoundName == "Mythology")
+                parameters += "&category=20";
+            else if (session.RoundName == "Sports")
+                parameters += "&category=21";
+            else if (session.RoundName == "Geography")
+                parameters += "&category=22";
+            else if (session.RoundName == "History")
+                parameters += "&category=23";
+            else if (session.RoundName == "Politics")
+                parameters += "&category=24";
+            else if (session.RoundName == "Art")
+                parameters += "&category=25";
+            else if (session.RoundName == "Celebrity")
+                parameters += "&category=26";
+            else if (session.RoundName == "Animals")
+                parameters += "&category=27";
             else
             {
                 parameters += "";//"&category=9";
@@ -242,6 +291,25 @@ namespace Online_Game_API
             await Clients.All.DisplayAnswers(random_answers);
             startTimer();
         }
+        public async void GetCountryQuestion()
+        {
+            _Question question = new _Question();
+            question.Question = "Select the largest country in the world";
+            question.Correct_answer = "Russia";
+            CurrentQuestion = question;
+            
+            await Clients.All.DisplayQuestion(CurrentQuestion);
+            //await Clients.All.DisplayAnswers(random_answers);
+            startTimer();
+        }
+
+
+            public static List<string> Countries = new List<string>
+    {
+  
+    }.OrderBy(x => x).ToList();
+        
+
         public async void OnReset()
         {
             CurrentQuestion = null;

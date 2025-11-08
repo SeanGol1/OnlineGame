@@ -25,6 +25,8 @@ export class SignalRService {
   question: BehaviorSubject<Question>;
   message: BehaviorSubject<string>;
   round: BehaviorSubject<string>;
+  currentRound: BehaviorSubject<string>;
+
   //scoreboard: BehaviorSubject<boolean>;
   private scoreboard = new BehaviorSubject<Boolean | false>(false);
   scoreboard$ = this.scoreboard.asObservable();
@@ -61,6 +63,7 @@ export class SignalRService {
     this.answers = new BehaviorSubject<Array<string>>([]);
     this.message = new BehaviorSubject<string>("");
     this.round = new BehaviorSubject<string>("");
+    this.currentRound = new BehaviorSubject<string>("");
     this.players = new BehaviorSubject<Array<Player>>([]);
     this.powerUps = new BehaviorSubject<Array<PowerUp>>([]);
     this.currentPlayer = new BehaviorSubject<Player>(null);
@@ -184,10 +187,12 @@ export class SignalRService {
       //this.message.next(message);
     });
 
-        this.connection.on('DisplayNewRound', (round: string) => {
+    this.connection.on('DisplayNewRound', (round: string) => {
       console.log("Round Received");
-      //this.message.next(message);
       this.round.next(round);
+      if(round != "")
+        this.currentRound.next(round);
+
     });
 
     this.connection.on('DisplayAlert', (message: string) => {

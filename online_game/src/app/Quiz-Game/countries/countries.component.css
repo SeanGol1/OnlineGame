@@ -1,0 +1,18 @@
+.country {
+  fill: #d0d0d0;
+  stroke: #333;
+  stroke-width: 0.7;
+  cursor: pointer;
+  transition: fill 0.2s, transform 0.2s;
+}
+
+.country:hover {
+  fill: #66a;
+  transform: scale(1.02);
+}
+
+.country.selected {
+  fill: #ffcc00;
+  stroke: #000;
+  stroke-width: 1;
+}

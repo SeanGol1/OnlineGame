@@ -10,6 +10,7 @@
     public class Session
     {
         public int CurrentRound { get; set; } = 1;
+        public string RoundName { get; set; }
         public SessionStatus Status { get; set; } = SessionStatus.Stopped;
     }
 }

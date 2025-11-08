@@ -16,7 +16,11 @@
   <h2 class="text-center my-3">Current Round: {{signalRService.round | async}}</h2>
 </div>
 
-<div class="game-div" *ngIf="serverConnected">
+<div *ngIf="!host && (signalRService.currentRound | async) == 'Countries'" >
+  <app-countries></app-countries>
+</div>
+
+<div class="game-div" *ngIf="serverConnected "> <!--&& ((signalRService.currentRound | async) != 'Countries' && !host)-->
   <h1 class="mb-4" [innerHTML]="message"></h1>
 
   <div *ngIf="powerUps" class="mb-3 power-up-messages">
