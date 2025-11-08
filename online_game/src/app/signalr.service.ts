@@ -24,7 +24,9 @@ export class SignalRService {
   answers: BehaviorSubject<Array<string>>;
   question: BehaviorSubject<Question>;
   message: BehaviorSubject<string>;
-  scoreboard: BehaviorSubject<boolean>;
+  //scoreboard: BehaviorSubject<boolean>;
+  private scoreboard = new BehaviorSubject<Boolean | false>(false);
+  scoreboard$ = this.scoreboard.asObservable();
   powerUps: BehaviorSubject<Array<PowerUp>>;
   seconds: BehaviorSubject<number>;
 
@@ -52,7 +54,7 @@ export class SignalRService {
   constructor() {
 
     this.serverConnected = new BehaviorSubject<boolean>(false);
-    this.scoreboard = new BehaviorSubject<boolean>(false);
+    // this.scoreboard = new BehaviorSubject<boolean>(false);
     this.toggleStopwatch = new BehaviorSubject<boolean>(false);
     this.question = new BehaviorSubject<Question>(null);
     this.answers = new BehaviorSubject<Array<string>>([]);
@@ -139,6 +141,20 @@ export class SignalRService {
     this.connection.on('UpdateScoreboard', () => {
       console.log("Scoreboard Received");
       this.scoreboard.next(!this.scoreboard);
+    });
+
+    this.connection.on('ToggleScoreboard', () => {
+      console.log("Scoreboard Received");
+      const current = this.scoreboard.getValue();
+      this.scoreboard.next(!current);
+      // this.scoreboard.next(!this.scoreboard);
+      if(!current){
+        document.getElementsByClassName('scoreboard-div')[0].classList.remove('hidden');
+      }
+      else{
+        document.getElementsByClassName('scoreboard-div')[0].classList.add('hidden');
+      }
+      
     });
 
     this.connection.on('ToggleStopwatch', () => {

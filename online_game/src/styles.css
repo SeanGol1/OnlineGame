@@ -76,3 +76,7 @@ button:hover {
   margin-right: auto;
   box-shadow: 0 6px 12px rgba(0,0,0,0.4);
 }
+
+.hidden {
+  display: none !important;
+}

@@ -49,3 +49,4 @@ Online_Game_API/appsettings.json
 online_game/src/environments/environment.ts
 online_game/src/environments/environment.development.ts
 online_game/angular.json
+TicTacToe/

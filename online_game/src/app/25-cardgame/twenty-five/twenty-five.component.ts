@@ -96,7 +96,7 @@ export class TwentyFiveComponent {
     //   this.toggleStopwatch = toggleStopwatch;
     // });
 
-    this.signalRService.scoreboard.subscribe((scoreboard: boolean) => {
+    this.signalRService.scoreboard$.subscribe((scoreboard: boolean) => {
       this.scoreboard = scoreboard;
     });
 

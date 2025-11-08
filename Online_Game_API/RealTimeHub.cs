@@ -231,7 +231,7 @@ namespace Online_Game_API
             await Clients.All.DisplayCorrectAnswer(getAnswerLetter(CurrentQuestion.Correct_answer));
 
             await Clients.All.DisplayPowerUps(PowerUps);
-            if (session.CurrentRound == 5 || session.CurrentRound == 10)
+            if (session.CurrentRound % 5 == 0)
             {
                 await Clients.All.ToggleScoreboard();
                 Thread.Sleep(10000);

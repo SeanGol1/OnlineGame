@@ -39,7 +39,7 @@ export class QuizGameComponent {
   @ViewChild('matSelectPlayer') matSelectPlayer: MatSelect;
 
 
-  constructor(private route: ActivatedRoute,private signalRService: SignalRService, public dialog: MatDialog) {
+  constructor(private route: ActivatedRoute,public signalRService: SignalRService, public dialog: MatDialog) {
     this.game = 'quiz';
     this.question = null;
     this.host = false;
@@ -51,6 +51,7 @@ export class QuizGameComponent {
     this.seconds = 100;
     this.progBarColor = "success";
     this.questionAnimation = false;
+    this.scoreboard = false;
 
        this.route.paramMap.subscribe(params => {
     this.username = params.get('username');
@@ -108,9 +109,9 @@ export class QuizGameComponent {
       this.toggleStopwatch = toggleStopwatch;
     });
 
-    this.signalRService.scoreboard.subscribe((scoreboard: boolean) => {
-      this.scoreboard = scoreboard;
-    });
+    // this.signalRService.scoreboard.subscribe((scoreboard: boolean) => {
+    //   this.scoreboard = scoreboard;
+    // });
 
 
   }
