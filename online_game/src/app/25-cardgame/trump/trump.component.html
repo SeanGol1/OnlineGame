@@ -1,0 +1,19 @@
+<ul class="deck">
+    <li>
+        <div class="card back">*</div>
+    </li>
+    <li>
+        <div class="card back">*</div>
+    </li>
+    <li>
+        <div class="card back">*</div>
+    </li>
+    <ng-container *ngIf="trumpcard">
+        <li>
+            <app-card [card]="trumpcard" [seletable]="trumpcard.isSelectable"></app-card>
+        </li>
+    </ng-container>
+
+</ul>
+
+<div class="clear"></div>

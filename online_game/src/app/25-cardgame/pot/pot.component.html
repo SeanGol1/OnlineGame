@@ -1,0 +1,28 @@
+<ul class="table">
+    <div class="pot-div">
+    <ng-container *ngIf="pot">
+        <li *ngFor="let c of pot" class="pot-card">
+                <app-card [card]="c.card" [seletable]="false"></app-card>
+        </li>
+    </ng-container>
+</div>
+    <!-- <ng-container *ngIf="!pot">
+        <li>
+            <div class="card back">*</div>
+        </li>
+        <li>
+            <div class="card back">*</div>
+        </li>
+        <li>
+            <div class="card back">*</div>
+        </li>
+        <li>
+            <div class="card back">*</div>
+        </li>
+        <li>
+            <div class="card back">*</div>
+        </li>
+    </ng-container> -->
+
+</ul> 
+<div class="clear"></div>

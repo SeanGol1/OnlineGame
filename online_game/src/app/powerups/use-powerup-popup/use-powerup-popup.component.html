@@ -1,0 +1,47 @@
+<ng-template #content let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Power Ups</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form>
+            <div class="mb-3">
+                <label for="dateOfBirth">Date of birth</label>
+                <div class="input-group">
+                    <input
+                        id="dateOfBirth"
+                        class="form-control"
+                        placeholder="yyyy-mm-dd"
+                        name="dp"
+                        ngbDatepicker
+                        #dp="ngbDatepicker"
+                    />
+                    <button class="btn btn-outline-secondary bi bi-calendar3" (click)="dp.toggle()" type="button"></button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
+    </div>
+</ng-template>
+
+<!-- <h2 mat-dialog-title>Update </h2>
+<div>
+    <p>Use a powerup</p>
+    <mat-form-field>
+        <mat-label>Choose Power Up</mat-label>
+        <mat-select #matSelectPowerUp required>
+            <mat-option value="Block">Block</mat-option>
+            <mat-option value="Spy">Spy</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Choose Opponent</mat-label>
+        <mat-select #matSelectPlayer required>
+            <mat-option *ngFor="let p of players" [value]="p.username">{{p.username}}</mat-option>
+        </mat-select>
+        <input matInput [(ngModel)]="powerup.type">
+    </mat-form-field>
+    <button mat-button (click)="onNoClick()">Use Power Up</button>
+</div> -->

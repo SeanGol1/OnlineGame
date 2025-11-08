@@ -1,0 +1,115 @@
+<div class="container joinDiv text-center" *ngIf="!serverConnected">
+  <h1 class="jumbotron mb-4">Quiz Game</h1>
+  <p class="lead mb-4">Join the game using your name. Then use the first screen as a Host.</p>
+  <input class="form-control mx-auto mb-3" style="max-width: 400px;" type="text" id="name" [(ngModel)]="username" placeholder="Username">
+  <div>
+    <button class="btn btn-success me-2" (click)="joinGame()" type="submit">Join Game</button>
+    <button class="btn btn-warning" routerLink="/quizrules">Rules</button>
+  </div>
+</div>
+
+<!-- <div *ngIf="host" class="my-4">
+  <app-scoreboard [players]="players"></app-scoreboard>
+</div> -->
+
+<div class="game-div" *ngIf="serverConnected">
+  <h1 class="mb-4" [innerHTML]="message"></h1>
+
+  <div *ngIf="powerUps" class="mb-3 power-up-messages">
+    <p *ngFor="let p of powerUps" class="power-up-message">{{p.sender}} used {{p.type}} on {{p.receiver}}</p>
+  </div>
+
+  <div class="mb-3 d-flex gap-2 flex-wrap">
+    <button class="btn btn-outline-primary" (click)="changeHost()">Toggle Host</button>
+    <button class="btn btn-outline-secondary" (click)="nextQuestion()">Next Question</button>
+    <button mat-raised-button color="primary" (click)="openPowerUp(content)" *ngIf="!host">Use Power Up</button>
+  </div>
+
+  <div>
+    <!-- Power Up Popup -->
+    <ng-template #content let-modal>
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Power Ups</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+      </div>
+      <div class="modal-body">
+        <h5>Choose Power Up</h5>
+        <mat-form-field class="w-100 mb-3">
+          <mat-label>Power Ups</mat-label>
+          <mat-select #matSelectPowerUp required [(value)]="powerup" (selectionChange)="selectPowerUp()">
+            <mat-option value="Block">Block</mat-option>
+            <mat-option value="Spy">Spy</mat-option>
+            <mat-option value="5050">50/50</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <p id="powerup-desc" class="mb-3"></p>
+        <h5>Use Power Up On Player</h5>
+        <mat-form-field class="w-100">
+          <mat-label>Opponents</mat-label>
+          <mat-select #matSelectPlayer required [(value)]="powerupPlayer">
+            <mat-option *ngFor="let p of players" [value]="p.username">{{p.username}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Activate</button>
+      </div>
+    </ng-template>
+
+    <!-- Player Screen -->
+    <div *ngIf="!host">
+      <div class="row container" *ngIf="!powerUpWindow">
+        <!-- <div class="row questionDiv mb-4">
+          <div class="col-12">
+            <p class="question" [innerHTML]="question.question"></p>
+          </div>
+        </div> -->
+
+        <div class="col-6 answer-div A" (click)="playerGuess('A')">
+          <p>A : {{answers[0]}}</p>
+        </div>
+        <div class="col-6 answer-div B" (click)="playerGuess('B')">
+          <p>B  : {{answers[1]}}</p>
+        </div>
+        <div class="col-6 answer-div C" (click)="playerGuess('C')">
+          <p>C : {{answers[2]}}</p>
+        </div>
+        <div class="col-6 answer-div D" (click)="playerGuess('D')">
+          <p>D : {{answers[3]}}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Host Screen -->
+    <div class="row" *ngIf="host">
+      <div class="row questionDiv mb-3" [ngClass]="{'fade-in-question': questionAnimation}">
+        <div class="col-12">
+          <p class="question" [innerHTML]="question?.question"></p>
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <ngb-progressbar [type]="progBarColor" [value]="seconds" height="20px"></ngb-progressbar>
+      </div>
+
+      <div class="hostAnswers">
+        <div class="row g-2">
+          <div class="col-sm-6 answer-a A">
+            <p [innerHTML]="'A. ' + answers[0]"></p>
+          </div>
+          <div class="col-sm-6 answer-b B">
+            <p [innerHTML]="'B. ' + answers[1]"></p>
+          </div>
+        </div>
+        <div class="row g-2 mt-2">
+          <div class="col-sm-6 answer-c C">
+            <p [innerHTML]="'C. ' + answers[2]"></p>
+          </div>
+          <div class="col-sm-6 answer-d D">
+            <p [innerHTML]="'D. ' + answers[3]"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,8 @@
+<div class="hand hhand-compact active-hand">
+    <ng-container *ngIf="playerHand">
+        <ng-container *ngFor="let c of playerHand">
+            <app-card *ngIf="c" [card]="c" [seletable]="c.isSelectable" [selected]="selectedCard === c"
+        (cardSelected)="onCardSelected($event)"></app-card>
+        </ng-container>
+    </ng-container>
+</div>

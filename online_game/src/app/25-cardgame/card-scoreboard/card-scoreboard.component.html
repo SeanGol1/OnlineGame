@@ -1,0 +1,19 @@
+<div class="scoreboard">
+  <div class="player-card" *ngFor="let player of players">
+    <h2 class="player-name">
+      {{ player.username }}
+      <i *ngIf="player.guess !== ''">&#x2713;</i>
+    </h2>
+
+    <h3 
+      class="player-score"
+      [class.score-bounce]="scoreChanged[player.username]"
+    >
+      Current Round: {{ player.score }}
+    </h3>
+
+    <h3>Total Games: {{ player.total }}</h3>
+
+    <h3 *ngIf="player.username === dealer" class="dealer-label" [class.dealer-highlight]="dealerChanged">Dealer</h3>
+  </div>
+</div>

@@ -1,0 +1,54 @@
+/* src/app/map/map.component.scss */
+.map-wrapper {
+  display: flex;
+  justify-content: center;
+  margin:100px;
+}
+
+svg {
+  width: 100%;
+  height: auto;
+  max-width: 2000px;
+  display: block;
+  user-select: none;
+}
+
+.county {
+  fill: #d0d0d0;
+  stroke: #333;
+  stroke-width: 0.7;
+  cursor: pointer;
+  transition: fill 0.2s, transform 0.2s;
+}
+
+.troop-text{
+    font-size: 12px;
+    font-weight: bold;
+    text-anchor: middle;
+    fill: #e00f0f;
+    pointer-events: none;
+}
+
+.county:hover {
+  fill: #66a;
+  transform: scale(1.02);
+}
+
+.county.selected {
+  fill: #ffcc00;
+  stroke: #000;
+  stroke-width: 1;
+}
+
+.sidebar{
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+body{
+    background-color: white !important;  
+}

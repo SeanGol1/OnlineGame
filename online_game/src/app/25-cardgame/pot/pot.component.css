@@ -1,0 +1,19 @@
+/* .pot-div{
+    height: 150px;
+    padding: 10px;
+    border: 5px solid black;
+    background-color: green;
+} */
+
+.pot-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+  gap: 1rem;
+}
+
+.table {
+  list-style-type: none;
+  padding: 0;
+}

@@ -1,0 +1,38 @@
+<div class="container joinDiv text-center" *ngIf="!serverConnected">
+  <h1 class="jumbotron mb-4">Guess Who</h1>
+  <p class="lead mb-4">Join the game using your name.</p>
+  <input class="form-control mx-auto mb-3" style="max-width: 400px;" type="text" id="name" [(ngModel)]="username" placeholder="Username">
+  <div>
+    <button class="btn btn-success me-2" (click)="joinGame()" type="submit">Join Game</button>
+    <button class="btn btn-warning" routerLink="/guesswhorules">Rules</button>
+  </div>
+</div>
+
+<div class="my-4">
+  <app-scoreboard [players]="players"></app-scoreboard>
+</div> 
+
+
+
+
+
+<div class="" *ngIf="serverConnected">
+
+    <button class="btn btn-danger me-2" type="submit" (click)="startGame()">Start Game</button>
+
+    <div *ngIf="selectedCharacter">
+        <div class="character-card"   class="selected-character" >
+            <img [src]="selectedCharacter.image" width="200px"  height="200px "alt="{{selectedCharacter.name}}" class="character-img img img-responsive" />
+            <p>{{ selectCharacter.name }}</p>
+        </div>
+
+    </div>
+
+    <div class="row board">        
+        <div class="character-card col-md-3"   [ngClass]="{ 'selected-character': selectedCharacter?.name === c.name }"  (click)="selectCharacter()" *ngFor="let c of characters">
+            <p>{{c.name}} + {{selectedCharacter}}</p>
+            <img [src]="c.image" width="200px"  height="200px "alt="{{c.name}}" class="character-img img img-responsive" />
+            <p>{{ c.name }}</p>
+        </div>
+    </div>
+</div>

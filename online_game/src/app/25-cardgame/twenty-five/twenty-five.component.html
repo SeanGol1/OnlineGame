@@ -1,0 +1,71 @@
+<!-- <router-outlet></router-outlet> -->
+
+<!-- <h3>Connected: {{serverConnected}} </h3> -->
+<div class="container joinDiv" *ngIf="!serverConnected">
+    <h1 class="jumbotron">25 Card Game</h1>
+    <p>Join the game using your name.</p>
+    <input style="width: 400px;" class="form-control" type="text" id="name" [(ngModel)]="username" placeholder="Username">
+    <button class="btn btn-success" (click)="joinGame()" type="submit">Join Game</button>
+<button class="btn btn-warning" routerLink="/twentyfiverules">Rules</button>
+</div>
+
+<div *ngIf="host">
+    <app-scoreboard [players]="players"></app-scoreboard>
+</div>
+
+<div class="game-div" *ngIf="serverConnected">
+    <h1 [innerHTML]="message"></h1>
+
+    <button (click)="start25()">Start Game</button>
+    <button (click)="dealCards()">Deal Cards</button>
+    <!-- <button (click)="finishTrick()">Finish Trick</button> -->
+    <!-- <button (click)="resetHub()">Restart Hub</button> -->
+    <!-- <button (click)="nextQuestion()">Next Question</button> -->
+
+
+    <p>TURN : <b>{{playerTurn.username==undefined?'':playerTurn.username}}</b></p>
+
+    <app-card-scoreboard [players]="players"></app-card-scoreboard>
+    <!-- <app-scoreboard [players]="players"></app-scoreboard> -->
+
+    <div>
+        <div class="playingCards">
+
+            <ul class="deck">
+                <li>
+                    <div class="card back">*</div>
+                </li>
+                <li>
+                    <div class="card back">*</div>
+                </li>
+                <li>
+                    <div class="card back">*</div>
+                </li>
+                <ng-container *ngIf="trumpcard">
+                    <li>
+                        <img class='card' src='/assets/cards/{{trumpcardpath}}.svg' >
+                    </li>
+                </ng-container>
+            
+            </ul>
+            
+            <div class="clear"></div>
+            <!-- <app-trump [trumpcard]="trumpcard[0]"></app-trump> -->
+
+            <app-pot [pot]="pot"></app-pot>
+
+            <app-hand [playerHand]="playerHand"></app-hand>
+
+
+            
+        </div>
+
+
+    </div>
+
+    <!-- <button (click)="submitCard()">Select Card</button> -->
+
+
+
+</div>
+

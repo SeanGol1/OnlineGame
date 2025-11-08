@@ -1,0 +1,7 @@
+<ng-container *ngIf="seletable">
+    <img class='card' [class.selected]="selected" src='/assets/cards/{{cardpath}}.svg' (click)="selectcard()">
+</ng-container>
+
+<ng-container *ngIf="!seletable">
+    <img class='card' src='/assets/cards/{{cardpath}}.svg' >
+</ng-container>

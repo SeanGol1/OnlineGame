@@ -1,0 +1,19 @@
+<!-- <div class="card" style="width: 18rem;">
+  <img class="card-img-top" src="https://invisioncommunity.co.uk/wp-content/uploads/2021/01/mario.jpg" alt="">
+  <div class="card-body">
+    <h5 class="card-title">{{player.username}} <i *ngIf="player.guess != ''">&#x2713;</i></h5>
+    <p class="card-text">{{player.score}}</p>
+    <h1 *ngIf="(player.timer != '')" >{{player.timer}}</h1>
+  </div>
+</div> -->
+
+<div class="player-card" [ngClass]="{ 'winner': player }">
+  <img class="avatar" src="https://invisioncommunity.co.uk/wp-content/uploads/2021/01/mario.jpg" alt="Avatar">
+  <div class="player-info">
+    <h5 class="player-name">
+      {{ player.username }} <i *ngIf="player.guess !== ''">&#x2713;</i>
+    </h5>
+    <p class="player-score">Score: {{ player.score }}</p>
+    <h2 *ngIf="player.timer !== ''" class="player-timer">{{ player.timer }}</h2>
+  </div>
+</div>
