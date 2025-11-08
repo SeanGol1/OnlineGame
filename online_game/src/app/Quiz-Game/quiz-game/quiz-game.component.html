@@ -8,9 +8,13 @@
   </div>
 </div>
 
-<div   *ngIf="host" class="my-4 scoreboard-div hidden"> <!--(signalRService.scoreboard$| async)  -->
+<div   *ngIf="host && (signalRService.scoreboard$| async) " class="my-4 scoreboard-div"> 
   <app-scoreboard [players]="players"></app-scoreboard>
 </div> 
+
+<div *ngIf="(signalRService.round | async) != ''" class="my-4 scoreboard-div">
+  <h2 class="text-center my-3">Current Round: {{signalRService.round | async}}</h2>
+</div>
 
 <div class="game-div" *ngIf="serverConnected">
   <h1 class="mb-4" [innerHTML]="message"></h1>

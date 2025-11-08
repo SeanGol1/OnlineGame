@@ -24,6 +24,7 @@ export class SignalRService {
   answers: BehaviorSubject<Array<string>>;
   question: BehaviorSubject<Question>;
   message: BehaviorSubject<string>;
+  round: BehaviorSubject<string>;
   //scoreboard: BehaviorSubject<boolean>;
   private scoreboard = new BehaviorSubject<Boolean | false>(false);
   scoreboard$ = this.scoreboard.asObservable();
@@ -59,6 +60,7 @@ export class SignalRService {
     this.question = new BehaviorSubject<Question>(null);
     this.answers = new BehaviorSubject<Array<string>>([]);
     this.message = new BehaviorSubject<string>("");
+    this.round = new BehaviorSubject<string>("");
     this.players = new BehaviorSubject<Array<Player>>([]);
     this.powerUps = new BehaviorSubject<Array<PowerUp>>([]);
     this.currentPlayer = new BehaviorSubject<Player>(null);
@@ -148,12 +150,12 @@ export class SignalRService {
       const current = this.scoreboard.getValue();
       this.scoreboard.next(!current);
       // this.scoreboard.next(!this.scoreboard);
-      if(!current){
-        document.getElementsByClassName('scoreboard-div')[0].classList.remove('hidden');
-      }
-      else{
-        document.getElementsByClassName('scoreboard-div')[0].classList.add('hidden');
-      }
+      // if(!current){
+      //   document.getElementsByClassName('scoreboard-div')[0].classList.remove('hidden');
+      // }
+      // else{
+      //   document.getElementsByClassName('scoreboard-div')[0].classList.add('hidden');
+      // }
       
     });
 
@@ -180,6 +182,12 @@ export class SignalRService {
     this.connection.on('DisplayMessage', (message: string) => {
       console.log("Message Received");
       //this.message.next(message);
+    });
+
+        this.connection.on('DisplayNewRound', (round: string) => {
+      console.log("Round Received");
+      //this.message.next(message);
+      this.round.next(round);
     });
 
     this.connection.on('DisplayAlert', (message: string) => {

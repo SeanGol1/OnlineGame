@@ -151,7 +151,8 @@ export class QuizGameComponent {
 
     public nextQuestion(): void {
       this.signalRService.connection
-        .invoke('GetNewQuestion')
+        // .invoke('GetNewQuestion')
+        .invoke('QuestionStart')
         .catch((error: any) => {
           console.log(` error: ${error}`);
           alert(`${error}`);

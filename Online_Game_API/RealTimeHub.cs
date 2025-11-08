@@ -131,6 +131,54 @@ namespace Online_Game_API
 
 
         //QUIZ
+
+        public async void QuestionStart() {
+            if (session.CurrentRound == 1)
+            {
+                await Clients.All.DisplayNewRound("General Knowledge");
+                Thread.Sleep(2000);
+                await Clients.All.DisplayNewRound("");
+            }
+            if (session.CurrentRound == 5)
+            {
+                await Clients.All.DisplayNewRound("Musicals");
+                Thread.Sleep(2000);
+                await Clients.All.DisplayNewRound("");
+            }
+            else if (session.CurrentRound == 10)
+            {
+                await Clients.All.DisplayNewRound("Countries");
+                Thread.Sleep(2000);
+                await Clients.All.DisplayNewRound("");
+            }
+
+            GetNewQuestion();
+        }
+        public async void QuestionEnd()
+        {
+            AddScores();
+
+            await Clients.All.DisplayMessage("Answer:" + CurrentQuestion.Correct_answer);
+            await Clients.All.DisplayCorrectAnswer(getAnswerLetter(CurrentQuestion.Correct_answer));
+
+            await Clients.All.DisplayPowerUps(PowerUps);
+            if (session.CurrentRound % 1 == 0)
+            {
+                await Clients.All.ToggleScoreboard();
+                Thread.Sleep(8000);
+                await Clients.All.ToggleScoreboard();
+            }
+            else
+                Thread.Sleep(5000);
+
+            OnReset();
+            session.CurrentRound += 1;
+            await Clients.All.DisplayPowerUps(PowerUps);
+            await Clients.All.DisplayPlayers(ConnectedUsers);
+
+
+            QuestionStart();
+        }
         public async void GetNewQuestion()
         {
             _Question question = new _Question();
@@ -223,35 +271,7 @@ namespace Online_Game_API
             return ConnectedUsers.Where(p => p.Guess != "").Count();
         }
 
-        public async void QuestionEnd()
-        {
-            AddScores();
 
-            await Clients.All.DisplayMessage("Answer:" + CurrentQuestion.Correct_answer);
-            await Clients.All.DisplayCorrectAnswer(getAnswerLetter(CurrentQuestion.Correct_answer));
-
-            await Clients.All.DisplayPowerUps(PowerUps);
-            if (session.CurrentRound % 5 == 0)
-            {
-                await Clients.All.ToggleScoreboard();
-                Thread.Sleep(10000);
-                await Clients.All.ToggleScoreboard();
-            }
-            else
-                Thread.Sleep(5000);
-
-            OnReset();
-            session.CurrentRound += 1;
-            await Clients.All.DisplayPowerUps(PowerUps);
-            await Clients.All.DisplayPlayers(ConnectedUsers);
-
-            if (session.CurrentRound > 5)
-                await Clients.All.DisplayMessage("Musicals");
-            else
-                await Clients.All.DisplayMessage($"Round {session.CurrentRound} - General Knowledge");
-
-            GetNewQuestion();
-        }
         public async void PlayerGuess(string answer)
         {
             Player player = getPlayer(Context.ConnectionId);

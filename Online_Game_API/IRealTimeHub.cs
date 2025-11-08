@@ -18,6 +18,7 @@ namespace Online_Game_API
         Task DisplayQuestion(_Question question);
         Task DisplayAnswers(List<string> answers);
         Task DisplayMessage(string message);
+        Task DisplayNewRound(string round);
         Task DisplayPlayers(List<Player> players);
         Task DisplayPowerUps(List<PowerUp> powerUps);
         Task DisplayAlert(string message);
