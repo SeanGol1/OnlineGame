@@ -8,7 +8,7 @@
 
 .country:hover {
   fill: #66a;
-  transform: scale(1.02);
+  /* transform: scale(1.02); */
 }
 
 .country.selected {

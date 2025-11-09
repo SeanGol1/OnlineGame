@@ -16,9 +16,10 @@
   <h2 class="text-center my-3">Current Round: {{signalRService.round | async}}</h2>
 </div>
 
-<div *ngIf="!host && (signalRService.currentRound | async) == 'Countries'" >
-  <app-countries></app-countries>
+<div *ngIf="message" class="my-4 message-popup">
+  <h2>{{message}}</h2>
 </div>
+
 
 <div class="game-div" *ngIf="serverConnected "> <!--&& ((signalRService.currentRound | async) != 'Countries' && !host)-->
   <h1 class="mb-4" [innerHTML]="message"></h1>
@@ -65,7 +66,7 @@
     </ng-template>
 
     <!-- Player Screen -->
-    <div *ngIf="!host">
+    <div *ngIf="!host  && (signalRService.currentRound | async) != 'Countries'">
       <div class="row container" *ngIf="!powerUpWindow">
         <!-- <div class="row questionDiv mb-4">
           <div class="col-12">
@@ -88,6 +89,11 @@
       </div>
     </div>
 
+    <!--Country Player Screen-->
+    <div *ngIf="!host && (signalRService.currentRound | async) == 'Countries'" >
+      <app-countries></app-countries>
+    </div>
+
     <!-- Host Screen -->
     <div class="row" *ngIf="host">
       <div class="row questionDiv mb-3" [ngClass]="{'fade-in-question': questionAnimation}">
@@ -100,7 +106,7 @@
         <ngb-progressbar [type]="progBarColor" [value]="seconds" height="20px"></ngb-progressbar>
       </div>
 
-      <div class="hostAnswers">
+      <div class="hostAnswers" *ngIf="(signalRService.currentRound | async) != 'Countries'">
         <div class="row g-2">
           <div class="col-sm-6 answer-a A">
             <p [innerHTML]="'A. ' + answers[0]"></p>
@@ -117,6 +123,10 @@
             <p [innerHTML]="'D. ' + answers[3]"></p>
           </div>
         </div>
+      </div>
+
+      <div class="hostAnswers" *ngIf="(signalRService.currentRound | async) == 'Countries'">
+        <h2>{{message}}</h2>
       </div>
     </div>
   </div>

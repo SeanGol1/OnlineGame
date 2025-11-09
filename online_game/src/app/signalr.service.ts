@@ -184,7 +184,7 @@ export class SignalRService {
 
     this.connection.on('DisplayMessage', (message: string) => {
       console.log("Message Received");
-      //this.message.next(message);
+      this.message.next(message);
     });
 
     this.connection.on('DisplayNewRound', (round: string) => {

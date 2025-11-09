@@ -72,7 +72,7 @@ export class QuizGameComponent {
       }, 10);
     });
 
-    this.signalRService.message.subscribe((message: string) => {
+    this.signalRService.message.subscribe(async (message: string) => {
       this.message = message;
     });
 

@@ -2,8 +2,21 @@
   position: fixed;       /* stays in place even when scrolling */
   top: 0;
   left: 0;
-  width: 100vw;          /* full viewport width */
-  height: 100vh;         /* full viewport height */
+  width: 100%;          /* full viewport width */
+  height: 100%;         /* full viewport height */
+  display: flex;         /* center scoreboard */
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.7); /* semi-transparent background overlay */
+  z-index: 9999;         /* ensure it’s on top of everything */
+}
+
+.message-popup{
+  position: fixed;       /* stays in place even when scrolling */
+  top: 0;
+  left: 0;
+  width: 100%;          /* full viewport width */
+  height: 100%;         /* full viewport height */
   display: flex;         /* center scoreboard */
   justify-content: center;
   align-items: center;

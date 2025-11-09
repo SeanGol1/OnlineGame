@@ -98,7 +98,7 @@ namespace Online_Game_API
             if (!exists)
                 ConnectedUsers.Add(p);
 
-            Clients.All.DisplayMessage($"Click Next for Question - {ConnectedUsers.Count} Players connected.");
+            //Clients.All.DisplayMessage($"Click Next for Question - {ConnectedUsers.Count} Players connected.");
             Clients.All.DisplayPlayers(ConnectedUsers);
 
         }
@@ -135,7 +135,7 @@ namespace Online_Game_API
         //QUIZ
 
         public async void QuestionStart() {
-
+            await Clients.All.DisplayMessage("");
             if (session.CurrentRound == 1)
             {
                 session.RoundName = "Countries";
@@ -167,15 +167,21 @@ namespace Online_Game_API
         {
             AddScores();
             if (session.RoundName == "Countries") { 
-                await Clients.All.DisplayMessage("Answer:" + CurrentQuestion.Correct_answer);
+                await Clients.All.DisplayMessage("Answer: " + CurrentQuestion.Correct_answer);
+                Thread.Sleep(3000);
+                await Clients.All.DisplayMessage("");
                 //TODO: Display correct country
             }
             else
             {
-                await Clients.All.DisplayMessage("Answer:" + CurrentQuestion.Correct_answer);
+                await Clients.All.DisplayMessage("Answer: " + CurrentQuestion.Correct_answer);
                 await Clients.All.DisplayCorrectAnswer(getAnswerLetter(CurrentQuestion.Correct_answer));
 
                 await Clients.All.DisplayPowerUps(PowerUps);
+                Thread.Sleep(3000);
+                await Clients.All.DisplayMessage("");
+
+                //Display Scores Every 5 Rounds
                 if (session.CurrentRound % 5 == 0)
                 {
                     await Clients.All.ToggleScoreboard();
@@ -417,22 +423,28 @@ namespace Online_Game_API
         {
             foreach (Player p in ConnectedUsers)
             {
-
                 string guess_wording = string.Empty;
-                switch (p.Guess)
+                if (session.RoundName != "Countries")
                 {
-                    case "A":
-                        guess_wording = CurrentAnswers[0];
-                        break;
-                    case "B":
-                        guess_wording = CurrentAnswers[1];
-                        break;
-                    case "C":
-                        guess_wording = CurrentAnswers[2];
-                        break;
-                    case "D":
-                        guess_wording = CurrentAnswers[3];
-                        break;
+                    switch (p.Guess)
+                    {
+                        case "A":
+                            guess_wording = CurrentAnswers[0];
+                            break;
+                        case "B":
+                            guess_wording = CurrentAnswers[1];
+                            break;
+                        case "C":
+                            guess_wording = CurrentAnswers[2];
+                            break;
+                        case "D":
+                            guess_wording = CurrentAnswers[3];
+                            break;
+                    }
+                }
+                else if (session.RoundName == "Countries")
+                {
+                    guess_wording = p.Guess;
                 }
 
                 if (PowerUps == null || PowerUps.Count() == 0)
