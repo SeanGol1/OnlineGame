@@ -19,10 +19,8 @@ import { Card, PotCard } from './models/card';
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent implements OnInit {
-  ngOnInit(): void {
-    throw new Error('Method not implemented.');
-  }
+export class AppComponent  {
+
  
 
 }

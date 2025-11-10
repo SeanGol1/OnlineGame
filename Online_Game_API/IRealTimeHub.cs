@@ -15,6 +15,8 @@ namespace Online_Game_API
         Task ChosenCharacter(GuessWhoCharacter character);
 
         /* Quiz Game*/
+        Task PauseQuiz();
+        Task isPauseAdmin(bool isPauseAdmin);
         Task DisplayQuestion(_Question question);
         Task DisplayAnswers(List<string> answers);
         Task DisplayMessage(string message);

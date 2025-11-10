@@ -18,6 +18,8 @@
 
 <div *ngIf="message" class="my-4 message-popup">
   <h2>{{message}}</h2>
+  <button *ngIf="(signalRService.isPauseAdmin | async)" class="btn btn-outline-warning" (click)="pause()">Resume Game</button>
+
 </div>
 
 
@@ -30,7 +32,9 @@
 
   <div class="mb-3 d-flex gap-2 flex-wrap">
     <button class="btn btn-outline-primary" (click)="changeHost()">Toggle Host</button>
-    <button class="btn btn-outline-secondary" (click)="nextQuestion()">Next Question</button>
+    <button class="btn btn-outline-primary" (click)="nextQuestion()">Start</button>
+    <button class="btn btn-outline-warning" (click)="pause()">Pause Game</button>
+
     <button mat-raised-button color="primary" (click)="openPowerUp(content)" *ngIf="!host">Use Power Up</button>
   </div>
 

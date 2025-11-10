@@ -26,6 +26,7 @@ export class SignalRService {
   message: BehaviorSubject<string>;
   round: BehaviorSubject<string>;
   currentRound: BehaviorSubject<string>;
+  isPauseAdmin: BehaviorSubject<boolean>;
 
   //scoreboard: BehaviorSubject<boolean>;
   private scoreboard = new BehaviorSubject<Boolean | false>(false);
@@ -68,6 +69,8 @@ export class SignalRService {
     this.powerUps = new BehaviorSubject<Array<PowerUp>>([]);
     this.currentPlayer = new BehaviorSubject<Player>(null);
     this.currentUsername = new BehaviorSubject<string>(null);
+    this.isPauseAdmin = new BehaviorSubject<boolean>(false);
+
 
     this.seconds = new BehaviorSubject<number>(15);
 
@@ -168,7 +171,7 @@ export class SignalRService {
     });
 
     this.connection.on('DisplayStopwatch', (seconds: number) => {
-      //console.log("Stopwatch Received");
+      console.log("Stopwatch Received");
       this.seconds.next(seconds);
     });
 
@@ -198,6 +201,11 @@ export class SignalRService {
     this.connection.on('DisplayAlert', (message: string) => {
       console.log("Alert Received");
       alert(message);
+    });
+
+    this.connection.on('isPauseAdmin', (isPauseAdmin: boolean) => {
+      console.log("Alert Received");
+      this.isPauseAdmin.next(isPauseAdmin);
     });
 
     this.connection.on('DisplayCorrectAnswer', (letter: string) => {

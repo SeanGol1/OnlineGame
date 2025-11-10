@@ -155,7 +155,7 @@ export class QuizGameComponent {
         .invoke('QuestionStart')
         .catch((error: any) => {
           console.log(` error: ${error}`);
-          alert(`${error}`);
+          //alert(`${error}`);
         });
     }
   
@@ -168,12 +168,12 @@ export class QuizGameComponent {
         .invoke('PlayerGuess', answer)
         .catch((error: any) => {
           console.log(` error: ${error}`);
-          alert(`${error}`);
+          //alert(`${error}`);
         });
       }
       catch(error){
         console.log(` error: ${error}`);
-          alert(`${error}`);
+          //alert(`${error}`);
       }
     }
   
@@ -181,6 +181,14 @@ export class QuizGameComponent {
       this.host = !this.host;
     }
   
+    public pause() {
+      this.signalRService.connection
+        .invoke('PauseQuiz')
+        .catch((error: any) => {
+          console.log(` error: ${error}`);
+          //alert(`${error}`);
+        });
+    }
     public powerUpWindowEnable() {
       //this.powerUpWindow = !this.powerUpWindow;
       const dialogRef = this.dialog.open(UsePowerupPopupComponent, {
@@ -244,7 +252,7 @@ export class QuizGameComponent {
           })
           .catch((error: any) => {
             console.log(` error: ${error}`);
-            alert(`${error}`);
+            //alert(`${error}`);
           });
   
       }

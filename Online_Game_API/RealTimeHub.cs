@@ -25,6 +25,7 @@ namespace Online_Game_API
         public static _Question CurrentQuestion;
         public static List<string> CurrentAnswers = new List<string>();
         public static Stopwatch stopwatch = new Stopwatch();
+        public static bool isPaused = false;
         //public static string CurrentRound; 
 
         /* 25 Card Game */
@@ -135,11 +136,15 @@ namespace Online_Game_API
         //QUIZ
 
         public async void QuestionStart() {
+            session.Status = SessionStatus.Running;
             await Clients.All.DisplayMessage("");
             if (session.CurrentRound == 1)
             {
+
+                //session.RoundName = "General Knowledge";
+                //await Clients.All.DisplayNewRound("General Knowledge");
                 session.RoundName = "Countries";
-                await Clients.All.DisplayNewRound("Countries"); 
+                await Clients.All.DisplayNewRound("Countries");
                 Thread.Sleep(2000);
                 await Clients.All.DisplayNewRound("");
             }
@@ -152,6 +157,8 @@ namespace Online_Game_API
             }
             else if (session.CurrentRound == 11)
             {
+                //session.RoundName = "Countries";
+                //await Clients.All.DisplayNewRound("Countries");
                 session.RoundName = "General Knowledge";
                 await Clients.All.DisplayNewRound("General Knowledge");
                 Thread.Sleep(2000);
@@ -166,16 +173,18 @@ namespace Online_Game_API
         public async void QuestionEnd()
         {
             AddScores();
-            if (session.RoundName == "Countries") { 
+            //if (session.RoundName == "Countries") { 
+            //    await Clients.All.DisplayMessage("Answer: " + CurrentQuestion.Correct_answer);
+            //    Thread.Sleep(3000);
+            //    await Clients.All.DisplayMessage("");
+            //    //TODO: Display correct country
+            //}
+            //else
+            //{
+                
                 await Clients.All.DisplayMessage("Answer: " + CurrentQuestion.Correct_answer);
-                Thread.Sleep(3000);
-                await Clients.All.DisplayMessage("");
-                //TODO: Display correct country
-            }
-            else
-            {
-                await Clients.All.DisplayMessage("Answer: " + CurrentQuestion.Correct_answer);
-                await Clients.All.DisplayCorrectAnswer(getAnswerLetter(CurrentQuestion.Correct_answer));
+                if (session.RoundName != "Countries")
+                    await Clients.All.DisplayCorrectAnswer(getAnswerLetter(CurrentQuestion.Correct_answer));
 
                 await Clients.All.DisplayPowerUps(PowerUps);
                 Thread.Sleep(3000);
@@ -188,14 +197,14 @@ namespace Online_Game_API
                     Thread.Sleep(8000);
                     await Clients.All.ToggleScoreboard();
                 }
-                else
-                    Thread.Sleep(5000);
+                //else
+                    //Thread.Sleep(5000);
 
                 OnReset();
                 session.CurrentRound += 1;
                 await Clients.All.DisplayPowerUps(PowerUps);
                 await Clients.All.DisplayPlayers(ConnectedUsers);
-            }
+            //}
 
 
             QuestionStart();
@@ -293,6 +302,7 @@ namespace Online_Game_API
                 temp_answers.Remove(temp_answers[index]);
             }
             CurrentAnswers = random_answers;
+            CurrentQuestion.Question = String.Format("{0}: {1}", session.CurrentRound, CurrentQuestion.Question);
             await Clients.All.DisplayQuestion(CurrentQuestion);
             await Clients.All.DisplayAnswers(random_answers);
             startTimer();
@@ -300,7 +310,7 @@ namespace Online_Game_API
         public async void GetCountryQuestion()
         {
             _Question question = new _Question();
-            question.Question = "Select the largest country in the world";
+            question.Question = session.CurrentRound + ": Select the largest country in the world";
             question.Correct_answer = "Russia";
             CurrentQuestion = question;
             
@@ -345,6 +355,24 @@ namespace Online_Game_API
             return ConnectedUsers.Where(p => p.Guess != "").Count();
         }
 
+        public async void PauseQuiz()
+        {
+            isPaused = !isPaused;
+            if(isPaused)
+            {
+                session.Status = SessionStatus.Paused;
+                stopwatch.Stop();
+                await Clients.All.DisplayMessage("Game Paused");
+                await Clients.Caller.isPauseAdmin(true);
+            }
+            else
+            {
+                await Clients.All.DisplayMessage("");
+                await Clients.Caller.isPauseAdmin(false);
+                session.Status = SessionStatus.Running;
+                stopwatch.Start();
+            }
+        }
 
         public async void PlayerGuess(string answer)
         {
@@ -366,23 +394,30 @@ namespace Online_Game_API
 
         public async void startTimer()
         {
-            int timer = 25;
+            int timer = 15;
             stopwatch.Start();
 
-            await Clients.Caller.ToggleStopwatch();
+            //await Clients.Caller.ToggleStopwatch();
 
             while (stopwatch.Elapsed.TotalSeconds < timer)
             {
-            //wait until timer is up.
-            for (int i = 0; i < (timer+1); i++)
-            {
-                float second = timer - i;
-                float n = (second / timer);
-                float perc = n * 100;
+                if (stopwatch.IsRunning )
+                {
+                    //wait until timer is up.
+                    for (int i = 0; i < (timer + 1); i++)
+                    {
+                        float second = timer - i;
+                        float n = (second / timer);
+                        float perc = n * 100;
 
-                await Clients.All.DisplayStopwatch(perc);
-                Thread.Sleep(1000);
-            }
+                        await Clients.All.DisplayStopwatch(perc);
+                        Thread.Sleep(1000);
+                        while(!stopwatch.IsRunning || session.Status != SessionStatus.Running)
+                        {
+                            Console.WriteLine("Paused");
+                        }
+                    }
+                }
             }
             stopwatch.Stop();
             stopwatch.Restart();

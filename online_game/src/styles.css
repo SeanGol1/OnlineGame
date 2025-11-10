@@ -4,18 +4,7 @@
     background-color: green;
 } 
 
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  background-color: #121212;
-  color: #f1f1f1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  /* height: 100vh; */
-  padding: 0;
-  height: 100%;
-} 
+
 
  .game-div {
   max-width: 1200px;
@@ -80,3 +69,17 @@ button:hover {
 .hidden {
   display: none !important;
 }
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: #121212;
+  color: #f1f1f1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* height: 100vh; */
+  padding: 0;
+  height: 100%;
+  overflow-x: hidden !important;
+} 
