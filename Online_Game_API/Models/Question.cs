@@ -14,4 +14,10 @@ namespace Online_Game_API.Models
         List<string> getIncorrect_answers() { return Incorrect_answers; }
         void setIncorrect_answers(List<string> Incorrect_answers) { this.Incorrect_answers = Incorrect_answers; }
     }
+
+    public class CountryQuestion
+    {
+        public string Text { get; set; } = string.Empty;
+        public string Answer { get; set; } = string.Empty;
+    }
 }

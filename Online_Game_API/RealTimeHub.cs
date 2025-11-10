@@ -10,11 +10,21 @@ using System.Net.NetworkInformation;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Security.Cryptography.Xml;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 namespace Online_Game_API
 {
     public class RealTimeHub : Hub<IRealTimeHub>
     {
+        private readonly IWebHostEnvironment _env;
+        private static List<CountryQuestion>? _questions;
+
+        public RealTimeHub(IWebHostEnvironment env)
+        {
+            _env = env;
+        }
+
         public static bool isTest = false;
 
         /* Quiz Game */
@@ -26,7 +36,10 @@ namespace Online_Game_API
         public static List<string> CurrentAnswers = new List<string>();
         public static Stopwatch stopwatch = new Stopwatch();
         public static bool isPaused = false;
-        //public static string CurrentRound; 
+        public static List<string> random_answers = new List<string>();
+        //public static string CurrentRound;
+        //
+        //Cleanup into a class object. 
 
         /* 25 Card Game */
         public static Card TrumpCard;
@@ -102,6 +115,15 @@ namespace Online_Game_API
             //Clients.All.DisplayMessage($"Click Next for Question - {ConnectedUsers.Count} Players connected.");
             Clients.All.DisplayPlayers(ConnectedUsers);
 
+            if(session.Status == SessionStatus.Running)
+            {
+                Clients.Caller.DisplayNewRound(session.RoundName);
+                Thread.Sleep(100);
+                Clients.Caller.DisplayNewRound("");
+                Clients.Caller.DisplayQuestion(CurrentQuestion);
+                Clients.Caller.DisplayAnswers(random_answers);
+            }
+
         }
         public async void OnDisconnect()
         {
@@ -138,32 +160,17 @@ namespace Online_Game_API
         public async void QuestionStart() {
             session.Status = SessionStatus.Running;
             await Clients.All.DisplayMessage("");
-            if (session.CurrentRound == 1)
-            {
 
-                //session.RoundName = "General Knowledge";
-                //await Clients.All.DisplayNewRound("General Knowledge");
-                session.RoundName = "Countries";
-                await Clients.All.DisplayNewRound("Countries");
-                Thread.Sleep(2000);
-                await Clients.All.DisplayNewRound("");
-            }
-            else if (session.CurrentRound == 6)
-            {
-                session.RoundName = "Musicals & Theatre";
-                await Clients.All.DisplayNewRound("Musicals & Theatre");
-                Thread.Sleep(2000);
-                await Clients.All.DisplayNewRound("");
-            }
-            else if (session.CurrentRound == 11)
-            {
-                //session.RoundName = "Countries";
-                //await Clients.All.DisplayNewRound("Countries");
+            if (session.CurrentRound == 1)
                 session.RoundName = "General Knowledge";
-                await Clients.All.DisplayNewRound("General Knowledge");
-                Thread.Sleep(2000);
-                await Clients.All.DisplayNewRound("");
-            }
+            else if (session.CurrentRound == 6)
+                session.RoundName = "Musicals & Theatre";
+            else if (session.CurrentRound == 11)
+                session.RoundName = "Countries";
+
+            await Clients.All.DisplayNewRound(session.RoundName);
+            Thread.Sleep(2000);
+            await Clients.All.DisplayNewRound("");
 
             if (session.RoundName == "Countries")
                 GetCountryQuestion();
@@ -173,16 +180,8 @@ namespace Online_Game_API
         public async void QuestionEnd()
         {
             AddScores();
-            //if (session.RoundName == "Countries") { 
-            //    await Clients.All.DisplayMessage("Answer: " + CurrentQuestion.Correct_answer);
-            //    Thread.Sleep(3000);
-            //    await Clients.All.DisplayMessage("");
-            //    //TODO: Display correct country
-            //}
-            //else
-            //{
                 
-                await Clients.All.DisplayMessage("Answer: " + CurrentQuestion.Correct_answer);
+                //await Clients.All.DisplayMessage("Answer: " + CurrentQuestion.Correct_answer);
                 if (session.RoundName != "Countries")
                     await Clients.All.DisplayCorrectAnswer(getAnswerLetter(CurrentQuestion.Correct_answer));
 
@@ -204,7 +203,6 @@ namespace Online_Game_API
                 session.CurrentRound += 1;
                 await Clients.All.DisplayPowerUps(PowerUps);
                 await Clients.All.DisplayPlayers(ConnectedUsers);
-            //}
 
 
             QuestionStart();
@@ -292,7 +290,8 @@ namespace Online_Game_API
 
             Random r = new Random();
             //_Question q = await GetQuestionApi();
-            List<string> random_answers = new List<string>();
+            //List<string> random_answers = new List<string>();
+            random_answers.Clear();
             List<string> temp_answers = new List<string>([CurrentQuestion.Correct_answer, CurrentQuestion.Incorrect_answers[0], CurrentQuestion.Incorrect_answers[1], CurrentQuestion.Incorrect_answers[2]]);
 
             for (int i = 0; i < 4; i++)
@@ -309,22 +308,34 @@ namespace Online_Game_API
         }
         public async void GetCountryQuestion()
         {
+            if (_questions == null || _questions.Count == 0)
+                LoadCountryQuestions();
+
             _Question question = new _Question();
             question.Question = session.CurrentRound + ": Select the largest country in the world";
             question.Correct_answer = "Russia";
             CurrentQuestion = question;
             
             await Clients.All.DisplayQuestion(CurrentQuestion);
-            //await Clients.All.DisplayAnswers(random_answers);
             startTimer();
         }
 
+        public async void LoadCountryQuestions()
+        {
 
-            public static List<string> Countries = new List<string>
-    {
-  
-    }.OrderBy(x => x).ToList();
-        
+
+            var filePath = Path.Combine(_env.ContentRootPath, "countryquestions.json");
+
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException($"File not found: {filePath}");
+
+            var json = await File.ReadAllTextAsync(filePath);
+            _questions = System.Text.Json.JsonSerializer.Deserialize<List<CountryQuestion>>(json, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+        }        
 
         public async void OnReset()
         {
