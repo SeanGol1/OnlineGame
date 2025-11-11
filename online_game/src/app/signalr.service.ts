@@ -195,7 +195,6 @@ export class SignalRService {
       this.round.next(round);
       if(round != "")
         this.currentRound.next(round);
-
     });
 
     this.connection.on('DisplayAlert', (message: string) => {

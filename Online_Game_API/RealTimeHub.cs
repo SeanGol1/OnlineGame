@@ -82,7 +82,7 @@ namespace Online_Game_API
                 {
                     p = pl;
                     exists = true;
-                    foreach(var c in p.Hand)
+                    foreach (var c in p.Hand)
                     {
                         Clients.Client(Context.ConnectionId).ShowPlayerHand(c.Number, c.Suit.ToString());
                     }
@@ -106,7 +106,7 @@ namespace Online_Game_API
             //Clients.All.DisplayMessage($"Click Next for Question - {ConnectedUsers.Count} Players connected.");
             Clients.All.DisplayPlayers(ConnectedUsers);
 
-            if(session.Status == SessionStatus.Running)
+            if (session.Status == SessionStatus.Running)
             {
                 Clients.Caller.DisplayNewRound(session.RoundName);
                 Thread.Sleep(100);
@@ -131,12 +131,12 @@ namespace Online_Game_API
         public async void StartGuessWho()
         {
             var random = new Random();
-            
+
             foreach (var user in ConnectedUsers)
             {
                 int index = random.Next(AllGuessWhoCharacters.Count);
                 GuessWhoCharacter selected = AllGuessWhoCharacters[index];
-                GuessWhoCharacters.Add((selected.Name,getPlayer(user.ConnectionIds[0]))); // Check all connection ids of user. 
+                GuessWhoCharacters.Add((selected.Name, getPlayer(user.ConnectionIds[0]))); // Check all connection ids of user. 
                 await Clients.Client(user.ConnectionIds[0]).ChosenCharacter(selected);
             }
 
@@ -144,7 +144,7 @@ namespace Online_Game_API
 
         }
 
-        
+
 
         //QUIZ
 
@@ -158,7 +158,8 @@ namespace Online_Game_API
             await Clients.All.RefreshScreen();
         }
 
-        public async void QuestionStart() {
+        public async void QuestionStart()
+        {
             session.Status = SessionStatus.Running;
             await Clients.All.DisplayMessage("");
 
@@ -185,30 +186,28 @@ namespace Online_Game_API
         public async void QuestionEnd()
         {
             AddScores();
-                
-                //await Clients.All.DisplayMessage("Answer: " + CurrentQuestion.Correct_answer);
-                if (session.RoundName != "Countries")
-                    await Clients.All.DisplayCorrectAnswer(getAnswerLetter(session.CurrentQuestion.Correct_answer));
 
-                await Clients.All.DisplayPowerUps(PowerUps);
-                Thread.Sleep(3000);
-                await Clients.All.DisplayMessage("");
+            if (session.RoundName != "Countries")
+                await Clients.All.DisplayCorrectAnswer(getAnswerLetter(session.CurrentQuestion.Correct_answer));
 
-                //Display Scores Every 5 Rounds
-                if (session.CurrentRound % 5 == 0)
-                {
-                    await Clients.All.ToggleScoreboard();
-                    Thread.Sleep(8000);
-                    await Clients.All.ToggleScoreboard();
-                }
-                //else
-                    //Thread.Sleep(5000);
+            await Clients.All.DisplayPowerUps(PowerUps);
+            Thread.Sleep(3000);
+            await Clients.All.DisplayMessage("");
 
-                OnReset();
-                session.CurrentRound += 1;
-                await Clients.All.DisplayPowerUps(PowerUps);
-                await Clients.All.DisplayPlayers(ConnectedUsers);
+            //Display Scores Every 5 Rounds
+            if (session.CurrentRound % 5 == 0)
+            {
+                await Clients.All.ToggleScoreboard();
+                Thread.Sleep(8000);
+                await Clients.All.ToggleScoreboard();
+            }
+            //else
+            //Thread.Sleep(5000);
 
+            OnReset();
+            session.CurrentRound += 1;
+            await Clients.All.DisplayPowerUps(PowerUps);
+            await Clients.All.DisplayPlayers(ConnectedUsers);
 
             QuestionStart();
         }
@@ -323,18 +322,17 @@ namespace Online_Game_API
             question.Question = session.CurrentRound + ": " + cQuestion.text;
             question.Correct_answer = cQuestion.answer;
             session.CurrentQuestion = question;
-            
+
             await Clients.All.DisplayQuestion(session.CurrentQuestion);
             startTimer();
         }
         public async void LoadCountryQuestions()
         {
             session.CountryQuestions = CountryQuestion.GetAll();
-        }        
+        }
         public async void OnReset()
         {
             session.CurrentQuestion = null;
-            //CurrentGuess.Clear();
             session.CurrentAnswers.Clear();
             PowerUps.Clear();
             stopwatch.Stop();
@@ -362,7 +360,7 @@ namespace Online_Game_API
 
         public async void PauseQuiz()
         {
-            if(session.Status != SessionStatus.Paused)
+            if (session.Status != SessionStatus.Paused)
             {
                 session.Status = SessionStatus.Paused;
                 stopwatch.Stop();
@@ -405,7 +403,7 @@ namespace Online_Game_API
 
             while (stopwatch.Elapsed.TotalSeconds < timer)
             {
-                if (stopwatch.IsRunning )
+                if (stopwatch.IsRunning)
                 {
                     //wait until timer is up.
                     for (int i = 0; i < (timer + 1); i++)
@@ -416,7 +414,7 @@ namespace Online_Game_API
 
                         await Clients.All.DisplayStopwatch(perc);
                         Thread.Sleep(1000);
-                        while(!stopwatch.IsRunning || session.Status != SessionStatus.Running)
+                        while (!stopwatch.IsRunning || session.Status != SessionStatus.Running)
                         {
                             Console.WriteLine("Paused");
                         }
@@ -811,7 +809,7 @@ namespace Online_Game_API
         public async void FinishRound()
         {
             bool isFinish = false;
-            
+
             List<(Card, Player)> cards = new List<(Card, Player)>();
             List<(int, Player)> tempscore = new List<(int, Player)>();
 
