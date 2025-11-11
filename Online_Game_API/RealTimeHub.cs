@@ -18,12 +18,6 @@ namespace Online_Game_API
     public class RealTimeHub : Hub<IRealTimeHub>
     {
         private readonly IWebHostEnvironment _env;
-        private static List<CountryQuestion>? _questions;
-
-        public RealTimeHub(IWebHostEnvironment env)
-        {
-            _env = env;
-        }
 
         public static bool isTest = false;
 
@@ -32,14 +26,8 @@ namespace Online_Game_API
         public static Random rnd = new Random();
         public static List<PowerUp> PowerUps = new List<PowerUp>();
         public static List<Player> ConnectedUsers = new List<Player>();
-        public static _Question CurrentQuestion;
-        public static List<string> CurrentAnswers = new List<string>();
         public static Stopwatch stopwatch = new Stopwatch();
-        public static bool isPaused = false;
         public static List<string> random_answers = new List<string>();
-        //public static string CurrentRound;
-        //
-        //Cleanup into a class object. 
 
         /* 25 Card Game */
         public static Card TrumpCard;
@@ -74,7 +62,10 @@ namespace Online_Game_API
 
         /* Risk */
 
-
+        public RealTimeHub(IWebHostEnvironment env)
+        {
+            _env = env;
+        }
 
         public void OnConnected(string username)
         {
@@ -120,7 +111,7 @@ namespace Online_Game_API
                 Clients.Caller.DisplayNewRound(session.RoundName);
                 Thread.Sleep(100);
                 Clients.Caller.DisplayNewRound("");
-                Clients.Caller.DisplayQuestion(CurrentQuestion);
+                Clients.Caller.DisplayQuestion(session.CurrentQuestion);
                 Clients.Caller.DisplayAnswers(random_answers);
             }
 
@@ -157,16 +148,30 @@ namespace Online_Game_API
 
         //QUIZ
 
+        public async void ResetQuizHub()
+        {
+            session = new Session();
+            ConnectedUsers = new List<Player>();
+            stopwatch = new Stopwatch();
+            PowerUps = new List<PowerUp>();
+            random_answers = new List<string>();
+            await Clients.All.RefreshScreen();
+        }
+
         public async void QuestionStart() {
             session.Status = SessionStatus.Running;
             await Clients.All.DisplayMessage("");
 
             if (session.CurrentRound == 1)
-                session.RoundName = "General Knowledge";
+                session.RoundName = session.GetRounds()[0];
             else if (session.CurrentRound == 6)
-                session.RoundName = "Musicals & Theatre";
+                session.RoundName = session.GetRounds()[1];
             else if (session.CurrentRound == 11)
-                session.RoundName = "Countries";
+                session.RoundName = session.GetRounds()[2];
+            else if (session.CurrentRound == 16)
+                session.RoundName = session.GetRounds()[3];
+            else if (session.CurrentRound == 21)
+                session.RoundName = session.GetRounds()[0];
 
             await Clients.All.DisplayNewRound(session.RoundName);
             Thread.Sleep(2000);
@@ -183,7 +188,7 @@ namespace Online_Game_API
                 
                 //await Clients.All.DisplayMessage("Answer: " + CurrentQuestion.Correct_answer);
                 if (session.RoundName != "Countries")
-                    await Clients.All.DisplayCorrectAnswer(getAnswerLetter(CurrentQuestion.Correct_answer));
+                    await Clients.All.DisplayCorrectAnswer(getAnswerLetter(session.CurrentQuestion.Correct_answer));
 
                 await Clients.All.DisplayPowerUps(PowerUps);
                 Thread.Sleep(3000);
@@ -276,7 +281,7 @@ namespace Online_Game_API
                     {
                         question.Incorrect_answers.Add(ia);
                     }
-                    CurrentQuestion = question;
+                    session.CurrentQuestion = question;
                 }
             }
             catch (Exception ex)
@@ -292,7 +297,7 @@ namespace Online_Game_API
             //_Question q = await GetQuestionApi();
             //List<string> random_answers = new List<string>();
             random_answers.Clear();
-            List<string> temp_answers = new List<string>([CurrentQuestion.Correct_answer, CurrentQuestion.Incorrect_answers[0], CurrentQuestion.Incorrect_answers[1], CurrentQuestion.Incorrect_answers[2]]);
+            List<string> temp_answers = new List<string>([session.CurrentQuestion.Correct_answer, session.CurrentQuestion.Incorrect_answers[0], session.CurrentQuestion.Incorrect_answers[1], session.CurrentQuestion.Incorrect_answers[2]]);
 
             for (int i = 0; i < 4; i++)
             {
@@ -300,48 +305,37 @@ namespace Online_Game_API
                 random_answers.Add(temp_answers[index]);
                 temp_answers.Remove(temp_answers[index]);
             }
-            CurrentAnswers = random_answers;
-            CurrentQuestion.Question = String.Format("{0}: {1}", session.CurrentRound, CurrentQuestion.Question);
-            await Clients.All.DisplayQuestion(CurrentQuestion);
+            session.CurrentAnswers = random_answers;
+            session.CurrentQuestion.Question = String.Format("{0}: {1}", session.CurrentRound, session.CurrentQuestion.Question);
+            await Clients.All.DisplayQuestion(session.CurrentQuestion);
             await Clients.All.DisplayAnswers(random_answers);
             startTimer();
         }
         public async void GetCountryQuestion()
         {
-            if (_questions == null || _questions.Count == 0)
+            if (session.CountryQuestions == null || session.CountryQuestions.Count == 0)
                 LoadCountryQuestions();
 
             _Question question = new _Question();
-            question.Question = session.CurrentRound + ": Select the largest country in the world";
-            question.Correct_answer = "Russia";
-            CurrentQuestion = question;
+            CountryQuestion cQuestion = session.CountryQuestions[rnd.Next(session.CountryQuestions.Count)];
+            session.CountryQuestions.Remove(cQuestion);
+
+            question.Question = session.CurrentRound + ": " + cQuestion.text;
+            question.Correct_answer = cQuestion.answer;
+            session.CurrentQuestion = question;
             
-            await Clients.All.DisplayQuestion(CurrentQuestion);
+            await Clients.All.DisplayQuestion(session.CurrentQuestion);
             startTimer();
         }
-
         public async void LoadCountryQuestions()
         {
-
-
-            var filePath = Path.Combine(_env.ContentRootPath, "countryquestions.json");
-
-            if (!File.Exists(filePath))
-                throw new FileNotFoundException($"File not found: {filePath}");
-
-            var json = await File.ReadAllTextAsync(filePath);
-            _questions = System.Text.Json.JsonSerializer.Deserialize<List<CountryQuestion>>(json, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-
+            session.CountryQuestions = CountryQuestion.GetAll();
         }        
-
         public async void OnReset()
         {
-            CurrentQuestion = null;
+            session.CurrentQuestion = null;
             //CurrentGuess.Clear();
-            CurrentAnswers.Clear();
+            session.CurrentAnswers.Clear();
             PowerUps.Clear();
             stopwatch.Stop();
             stopwatch.Restart();
@@ -368,8 +362,7 @@ namespace Online_Game_API
 
         public async void PauseQuiz()
         {
-            isPaused = !isPaused;
-            if(isPaused)
+            if(session.Status != SessionStatus.Paused)
             {
                 session.Status = SessionStatus.Paused;
                 stopwatch.Stop();
@@ -439,7 +432,7 @@ namespace Online_Game_API
         {
             int i = 0;
             string letter = string.Empty;
-            foreach (string ans in CurrentAnswers)
+            foreach (string ans in session.CurrentAnswers)
             {
                 if (ans == answer)
                 {
@@ -475,16 +468,16 @@ namespace Online_Game_API
                     switch (p.Guess)
                     {
                         case "A":
-                            guess_wording = CurrentAnswers[0];
+                            guess_wording = session.CurrentAnswers[0];
                             break;
                         case "B":
-                            guess_wording = CurrentAnswers[1];
+                            guess_wording = session.CurrentAnswers[1];
                             break;
                         case "C":
-                            guess_wording = CurrentAnswers[2];
+                            guess_wording = session.CurrentAnswers[2];
                             break;
                         case "D":
-                            guess_wording = CurrentAnswers[3];
+                            guess_wording = session.CurrentAnswers[3];
                             break;
                     }
                 }
@@ -495,7 +488,7 @@ namespace Online_Game_API
 
                 if (PowerUps == null || PowerUps.Count() == 0)
                 {
-                    if (guess_wording == CurrentQuestion.Correct_answer)
+                    if (guess_wording == session.CurrentQuestion.Correct_answer)
                     {
                         p.Score += 10;
                     }
@@ -510,7 +503,7 @@ namespace Online_Game_API
                         }
                         else
                         {
-                            if (guess_wording == CurrentQuestion.Correct_answer)
+                            if (guess_wording == session.CurrentQuestion.Correct_answer)
                             {
                                 p.Score += 10;
                             }
@@ -549,7 +542,7 @@ namespace Online_Game_API
                         question.Incorrect_answers.Add(ia);
                     }
 
-                    CurrentQuestion = question;
+                    session.CurrentQuestion = question;
 
                 }
             }
@@ -560,8 +553,6 @@ namespace Online_Game_API
 
             return question;
         }
-
-
         public async void UsePowerUp(string powerup, string? user)
         {
             Player p = getPlayer(Context.ConnectionId);
@@ -593,8 +584,6 @@ namespace Online_Game_API
 
         }
 
-
-
         public static void Shuffle<T>(IList<T> list)
         {
             int n = list.Count;
@@ -610,9 +599,9 @@ namespace Online_Game_API
 
         public List<string> Get5050List()
         {
-            List<string> mixAnswers = CurrentAnswers.OrderBy(_ => rnd.Next()).ToList();
+            List<string> mixAnswers = session.CurrentAnswers.OrderBy(_ => rnd.Next()).ToList();
             List<string> newAnswers = new List<string>();
-            mixAnswers.Remove(CurrentQuestion.Correct_answer);
+            mixAnswers.Remove(session.CurrentQuestion.Correct_answer);
             newAnswers.Add(mixAnswers[0]);
             newAnswers.Add(mixAnswers[1]);
 
@@ -656,8 +645,6 @@ namespace Online_Game_API
             }
             TrumpCard = null;
         }
-
-
 
         public void TestDeal()
         {

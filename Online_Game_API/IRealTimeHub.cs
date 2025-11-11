@@ -16,6 +16,8 @@ namespace Online_Game_API
 
         /* Quiz Game*/
         Task PauseQuiz();
+        Task ResetQuizHub();
+        Task RefreshScreen();
         Task isPauseAdmin(bool isPauseAdmin);
         Task DisplayQuestion(_Question question);
         Task DisplayAnswers(List<string> answers);

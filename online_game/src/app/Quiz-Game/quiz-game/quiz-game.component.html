@@ -8,9 +8,7 @@
   </div>
 </div>
 
-<div   *ngIf="host && (signalRService.scoreboard$| async) " class="my-4 scoreboard-div"> 
-  <app-scoreboard [players]="players"></app-scoreboard>
-</div> 
+
 
 <div *ngIf="(signalRService.round | async) != ''" class="my-4 scoreboard-div">
   <h2 class="text-center my-3">Current Round: {{signalRService.round | async}}</h2>
@@ -19,9 +17,13 @@
 <div *ngIf="message" class="my-4 message-popup">
   <h2>{{message}}</h2>
   <button *ngIf="(signalRService.isPauseAdmin | async)" class="btn btn-outline-warning" (click)="pause()">Resume Game</button>
-
+  <br/>
+  <app-scoreboard [players]="players"></app-scoreboard>
 </div>
 
+<div   *ngIf="host && (signalRService.scoreboard$| async) " class="my-4 scoreboard-div"> 
+  <app-scoreboard [players]="players"></app-scoreboard>
+</div> 
 
 <div class="game-div" *ngIf="serverConnected "> <!--&& ((signalRService.currentRound | async) != 'Countries' && !host)-->
   <h1 class="mb-4" [innerHTML]="message"></h1>
@@ -32,6 +34,7 @@
 
   <div class="mb-3 d-flex gap-2 flex-wrap">
     <button class="btn btn-outline-primary" (click)="changeHost()">Toggle Host</button>
+    <button class="btn btn-outline-primary" (click)="ResetHub()">Reset Game</button>
     <button class="btn btn-outline-primary" (click)="nextQuestion()">Start</button>
     <button class="btn btn-outline-warning" (click)="pause()">Pause Game</button>
 

@@ -239,6 +239,10 @@ export class SignalRService {
       this.answers.next(answers);
     });
 
+    this.connection.on('RefreshScreen', () => {
+      window.location.reload();
+    });
+
     //
     // 25 card game.
     //

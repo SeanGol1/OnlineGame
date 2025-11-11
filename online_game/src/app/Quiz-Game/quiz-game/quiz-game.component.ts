@@ -155,7 +155,6 @@ export class QuizGameComponent {
         .invoke('QuestionStart')
         .catch((error: any) => {
           console.log(` error: ${error}`);
-          //alert(`${error}`);
         });
     }
   
@@ -256,5 +255,16 @@ export class QuizGameComponent {
           });
   
       }
+    }
+
+    public ResetHub() {
+      this.signalRService.connection
+        .invoke('ResetQuizHub')
+        .catch((error: any) => {
+          console.log(` error: ${error}`);
+          //alert(`${error}`);
+        });
+
+        
     }
 }
