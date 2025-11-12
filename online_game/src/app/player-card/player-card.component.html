@@ -8,7 +8,7 @@
 </div> -->
 
 <div class="player-card" [ngClass]="{ 'winner': player }">
-  <img class="avatar" src="https://invisioncommunity.co.uk/wp-content/uploads/2021/01/mario.jpg" alt="Avatar">
+  <img class="avatar" src="assets/avatars/{{player.avatar}}.png" alt="Avatar">
   <div class="player-info">
     <h5 class="player-name">
       {{ player.username }} <i *ngIf="player.guess !== ''">&#x2713;</i>

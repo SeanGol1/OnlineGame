@@ -9,6 +9,7 @@ namespace Online_Game_API
         Task ResetScreen();
         Task ResetHub();
         Task OnConnected();
+        Task CurrentPlayer(Player player);
 
         /* Guess Who */
         //Task StartGuessWho();

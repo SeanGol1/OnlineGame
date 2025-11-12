@@ -5,10 +5,11 @@
   border-radius: 16px;
   text-align: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  color: #000000;
+  color: #ffffff;
   width: 100%;
   max-width: 280px;
   transition: transform 0.3s ease;
+  font-size: 2.4rem;
 }
 
 .player-card:hover {
@@ -18,7 +19,7 @@
 .avatar {
   width: 100%;
   height: auto;
-  max-height: 160px;
+  max-height: 260px;
   border-radius: 12px;
   object-fit: cover;
   margin-bottom: 1rem;
@@ -31,13 +32,13 @@
 }
 
 .player-name {
-  font-size: 1.3rem;
+  font-size: 2.3rem;
   font-weight: bold;
   margin-bottom: 0.5rem;
 }
 
 .player-score {
-  font-size: 1.1rem;
+  font-size: 2.1rem;
   color: #b50303;
 }
 

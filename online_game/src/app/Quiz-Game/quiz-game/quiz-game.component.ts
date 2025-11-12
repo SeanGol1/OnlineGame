@@ -16,6 +16,7 @@ import { SignalRService } from 'src/app/signalr.service';
 })
 export class QuizGameComponent {
  game?: string;
+ selectedAvatar?: string;
   question?: Question;
   username?: string;
   host?: boolean;
@@ -38,6 +39,8 @@ export class QuizGameComponent {
   @ViewChild('matSelectPowerUp') matSelectPowerup: MatSelect;
   @ViewChild('matSelectPlayer') matSelectPlayer: MatSelect;
 
+  avatars = ['homer', 'witcher', 'jack_sparrow', 'lemmy'];
+
 
   constructor(private route: ActivatedRoute,public signalRService: SignalRService, public dialog: MatDialog) {
     this.game = 'quiz';
@@ -52,13 +55,25 @@ export class QuizGameComponent {
     this.progBarColor = "success";
     this.questionAnimation = false;
     this.scoreboard = false;
-
-       this.route.paramMap.subscribe(params => {
-    this.username = params.get('username');
-    if (this.username) {
-      this.signalRService.startConnection(this.username);
+    this.currentPlayer = {
+      username: '',
+      connectionIds: [],
+      isHost: false,
+      avatar: '',
+      score: '',
+      guess: '',
+      timer: '',
+      hand: [],
+      order: 0,
+      total: 0
     }
-  });
+
+    this.route.paramMap.subscribe(params => {
+      this.username = params.get('username');
+      if (this.username) {
+        this.signalRService.startConnection(this.username,this.selectedAvatar);
+      }
+    });
 
   }
 
@@ -109,6 +124,10 @@ export class QuizGameComponent {
       this.toggleStopwatch = toggleStopwatch;
     });
 
+    this.signalRService.currentPlayer.subscribe((player: Player) => {
+      this.currentPlayer = player;
+    });
+
     // this.signalRService.scoreboard.subscribe((scoreboard: boolean) => {
     //   this.scoreboard = scoreboard;
     // });
@@ -127,7 +146,7 @@ export class QuizGameComponent {
 
   public joinGame(): void {
     if (this.username != '') {
-      this.signalRService.startConnection(this.username);
+      this.signalRService.startConnection(this.username, this.selectedAvatar);
 
       // this.signalRService.connection
       //   .invoke('OnConnected', this.username)
@@ -255,6 +274,10 @@ export class QuizGameComponent {
           });
   
       }
+    }
+
+     public selectAvatar(avatar: string) {
+     this.selectedAvatar = avatar;  
     }
 
     public ResetHub() {

@@ -26,6 +26,21 @@
   z-index: 9999;         /* ensure it’s on top of everything */
 }
 
+.avatar-div{
+  border: 2px solid #9e9fa0;
+  padding: 2%;
+}
+
+.avatar-div:hover {
+  background-color: #0d6efd;
+  transform: scale(1.05);
+}
+
+.selected-avatar{
+  background-color: #38b43e;
+
+}
+
 .jumbotron {
   font-weight: 700;
   font-size: 3rem;

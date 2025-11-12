@@ -3,6 +3,7 @@
     
     <br/>
     <div class="player-card-container" *ngFor="let p of players">
-        <app-player-card [player]="p"></app-player-card>
+        
+        <app-player-card *ngIf="!p.isHost" [player]="p"></app-player-card>
     </div>
 </div>

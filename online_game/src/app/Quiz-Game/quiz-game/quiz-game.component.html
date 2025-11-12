@@ -1,7 +1,15 @@
 <div class="container joinDiv text-center" *ngIf="!serverConnected">
   <h1 class="jumbotron mb-4">Quiz Game</h1>
   <p class="lead mb-4">Join the game using your name. Then use the first screen as a Host.</p>
-  <input class="form-control mx-auto mb-3" style="max-width: 400px;" type="text" id="name" [(ngModel)]="username" placeholder="Username">
+  <div class="row" id="avatar-list">
+    <div *ngFor="let avatar of avatars" class="col-6 col-md-3 avatar-div"
+      [class.selected-avatar]="selectedAvatar === avatar" (click)="selectAvatar(avatar)">
+      <img [src]="'assets/avatars/' + avatar + '.png'" [alt]="avatar" class="img" width="100%">
+    </div>
+  </div>
+  <br />
+  <input class="form-control mx-auto mb-3" style="max-width: 400px;" type="text" id="name" [(ngModel)]="username"
+    placeholder="Username">
   <div>
     <button class="btn btn-success me-2" (click)="joinGame()" type="submit">Join Game</button>
     <button class="btn btn-warning" routerLink="/quizrules">Rules</button>
@@ -15,17 +23,23 @@
 </div>
 
 <div *ngIf="message" class="my-4 message-popup">
+  <div class="row">
   <h2>{{message}}</h2>
-  <button *ngIf="(signalRService.isPauseAdmin | async)" class="btn btn-outline-warning" (click)="pause()">Resume Game</button>
-  <br/>
+  <button *ngIf="(signalRService.isPauseAdmin | async)" class="btn btn-outline-warning" (click)="pause()">Resume
+    Game</button>
+    </div>
+  <br />
+  <div class="row">
+  <app-scoreboard [players]="players"></app-scoreboard>
+  </div>
+</div>
+
+<div *ngIf="(signalRService.scoreboard$| async) " class="my-4 scoreboard-div">
   <app-scoreboard [players]="players"></app-scoreboard>
 </div>
 
-<div   *ngIf="host && (signalRService.scoreboard$| async) " class="my-4 scoreboard-div"> 
-  <app-scoreboard [players]="players"></app-scoreboard>
-</div> 
-
-<div class="game-div" *ngIf="serverConnected "> <!--&& ((signalRService.currentRound | async) != 'Countries' && !host)-->
+<div class="game-div" *ngIf="serverConnected ">
+  <!--&& ((signalRService.currentRound | async) != 'Countries' && !host)-->
   <h1 class="mb-4" [innerHTML]="message"></h1>
 
   <div *ngIf="powerUps" class="mb-3 power-up-messages">
@@ -38,7 +52,7 @@
     <button class="btn btn-outline-primary" (click)="nextQuestion()">Start</button>
     <button class="btn btn-outline-warning" (click)="pause()">Pause Game</button>
 
-    <button mat-raised-button color="primary" (click)="openPowerUp(content)" *ngIf="!host">Use Power Up</button>
+    <button mat-raised-button color="primary" (click)="openPowerUp(content)" *ngIf="!currentPlayer.isHost">Use Power Up</button>
   </div>
 
   <div>
@@ -73,7 +87,7 @@
     </ng-template>
 
     <!-- Player Screen -->
-    <div *ngIf="!host  && (signalRService.currentRound | async) != 'Countries'">
+    <div *ngIf="!currentPlayer.isHost && (signalRService.currentRound | async) != 'Countries'">
       <div class="row container" *ngIf="!powerUpWindow">
         <!-- <div class="row questionDiv mb-4">
           <div class="col-12">
@@ -85,7 +99,7 @@
           <p>A : {{answers[0]}}</p>
         </div>
         <div class="col-6 answer-div B" (click)="playerGuess('B')">
-          <p>B  : {{answers[1]}}</p>
+          <p>B : {{answers[1]}}</p>
         </div>
         <div class="col-6 answer-div C" (click)="playerGuess('C')">
           <p>C : {{answers[2]}}</p>
@@ -97,12 +111,12 @@
     </div>
 
     <!--Country Player Screen-->
-    <div *ngIf="!host && (signalRService.currentRound | async) == 'Countries'" >
+    <div *ngIf="!currentPlayer.isHost && (signalRService.currentRound | async) == 'Countries'">
       <app-countries></app-countries>
     </div>
 
     <!-- Host Screen -->
-    <div class="row" *ngIf="host">
+    <div class="row" *ngIf="currentPlayer.isHost">
       <div class="row questionDiv mb-3" [ngClass]="{'fade-in-question': questionAnimation}">
         <div class="col-12">
           <p class="question" [innerHTML]="question?.question"></p>

@@ -93,7 +93,7 @@ export class SignalRService {
 
   }
 
-  startConnection = (username: string) => {
+  startConnection = (username: string, avatar?:string) => {
 
     this.connection = new signalR.HubConnectionBuilder()
       .withUrl(this.hubUrl, {
@@ -102,14 +102,16 @@ export class SignalRService {
       })
       //.withAutomaticReconnect()
       .build();
-
+      if(avatar == null || avatar == undefined){
+        avatar = "none";
+      }
 
     this.connection
       .start()
       .then(() => {
         this.currentUsername.next(username);
         this.connection
-          .invoke('OnConnected', username)
+          .invoke('OnConnected', username,avatar)
           .catch((error: any) => {
             console.log(` error: ${error}`);
             //alert(`${error}`);
@@ -144,6 +146,11 @@ export class SignalRService {
     this.connection.on('DisplayQuestion', (question: Question) => {
       console.log("Question Received");
       this.question.next(question);
+    });
+
+    this.connection.on('CurrentPlayer', (player: Player) => {
+      console.log("Player Received");
+      this.currentPlayer.next(player);
     });
 
     this.connection.on('UpdateScoreboard', () => {
@@ -349,9 +356,6 @@ export class SignalRService {
     // });
   }
 
-  public getCurrentPlayer() {
-
-  }
 
   public validateAce(card: Card) {
 

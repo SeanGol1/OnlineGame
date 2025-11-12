@@ -67,25 +67,31 @@ namespace Online_Game_API
             _env = env;
         }
 
-        public void OnConnected(string username)
+
+        public void OnConnected(string username,string avatar)
         {
             Trace.TraceInformation("MapHub started. ID: {0}", Context.ConnectionId);
             bool exists = false;
             Player p = new Player();
             p.Username = username;
+            p.Avatar = avatar;
             p.Order = ConnectedUsers.Count;
+
+            if (ConnectedUsers.Count == 0)
+                p.IsHost = true;
             // Try to get a List of existing user connections from the cache
             try
             {
                 var pl = ConnectedUsers.Where(x => x.Username == username).FirstOrDefault();
+
                 if (pl != null)
                 {
                     p = pl;
                     exists = true;
-                    foreach (var c in p.Hand)
-                    {
-                        Clients.Client(Context.ConnectionId).ShowPlayerHand(c.Number, c.Suit.ToString());
-                    }
+                    //foreach (var c in p.Hand)
+                    //{
+                    //    Clients.Client(Context.ConnectionId).ShowPlayerHand(c.Number, c.Suit.ToString());
+                    //}
                 }
             }
             catch (Exception ex)
@@ -105,6 +111,7 @@ namespace Online_Game_API
 
             //Clients.All.DisplayMessage($"Click Next for Question - {ConnectedUsers.Count} Players connected.");
             Clients.All.DisplayPlayers(ConnectedUsers);
+            Clients.Caller.CurrentPlayer(p);
 
             if (session.Status == SessionStatus.Running)
             {
@@ -164,11 +171,11 @@ namespace Online_Game_API
             await Clients.All.DisplayMessage("");
 
             if (session.CurrentRound == 1)
-                session.RoundName = session.GetRounds()[0];
+                session.RoundName = session.GetRounds()[2];
             else if (session.CurrentRound == 6)
                 session.RoundName = session.GetRounds()[1];
             else if (session.CurrentRound == 11)
-                session.RoundName = session.GetRounds()[2];
+                session.RoundName = session.GetRounds()[0];
             else if (session.CurrentRound == 16)
                 session.RoundName = session.GetRounds()[3];
             else if (session.CurrentRound == 21)
@@ -201,8 +208,6 @@ namespace Online_Game_API
                 Thread.Sleep(8000);
                 await Clients.All.ToggleScoreboard();
             }
-            //else
-            //Thread.Sleep(5000);
 
             OnReset();
             session.CurrentRound += 1;
@@ -216,7 +221,6 @@ namespace Online_Game_API
             _Question question = new _Question();
             using var client = new HttpClient();
             client.BaseAddress = new Uri("https://opentdb.com/api.php");
-            // Add an Accept header for JSON format.
             client.DefaultRequestHeaders.Accept.Add(
                new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -293,8 +297,6 @@ namespace Online_Game_API
             }
 
             Random r = new Random();
-            //_Question q = await GetQuestionApi();
-            //List<string> random_answers = new List<string>();
             random_answers.Clear();
             List<string> temp_answers = new List<string>([session.CurrentQuestion.Correct_answer, session.CurrentQuestion.Incorrect_answers[0], session.CurrentQuestion.Incorrect_answers[1], session.CurrentQuestion.Incorrect_answers[2]]);
 
