@@ -5,6 +5,7 @@ import { SignalRService } from '../../signalr.service';
 @Component({
   selector: 'app-scoreboard',
   templateUrl: './scoreboard.component.html',
+  standalone: false,
   styleUrls: ['./scoreboard.component.css']
 })
 export class ScoreboardComponent {

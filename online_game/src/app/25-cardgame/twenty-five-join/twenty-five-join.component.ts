@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-twenty-five-join',
   templateUrl: './twenty-five-join.component.html',
+  standalone: false,
   styleUrls: ['./twenty-five-join.component.css']
 })
 export class TwentyFiveJoinComponent {

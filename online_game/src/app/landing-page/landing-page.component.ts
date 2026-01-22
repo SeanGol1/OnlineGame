@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-landing-page',
   templateUrl: './landing-page.component.html',
+  standalone: false,
   styleUrls: ['./landing-page.component.css']
 })
 export class LandingPageComponent {

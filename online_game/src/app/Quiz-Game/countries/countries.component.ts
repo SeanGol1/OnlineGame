@@ -4,6 +4,7 @@ import { SignalRService } from 'src/app/signalr.service';
 @Component({
   selector: 'app-countries',
   templateUrl: './countries.component.html',
+  standalone: false,
   styleUrls: ['./countries.component.css']
 })
 export class CountriesComponent {

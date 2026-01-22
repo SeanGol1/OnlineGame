@@ -12,6 +12,7 @@ import { SignalRService } from 'src/app/signalr.service';
 @Component({
   selector: 'app-use-powerup-popup',
   templateUrl: './use-powerup-popup.component.html',
+  standalone: false,
   styleUrls: ['./use-powerup-popup.component.css'],
 })
 export class UsePowerupPopupComponent implements OnInit {

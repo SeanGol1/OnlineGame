@@ -12,6 +12,7 @@ import { SignalRService } from 'src/app/signalr.service';
 @Component({
   selector: 'app-quiz-game',
   templateUrl: './quiz-game.component.html',
+  standalone: false,
   styleUrls: ['./quiz-game.component.css']
 })
 export class QuizGameComponent {

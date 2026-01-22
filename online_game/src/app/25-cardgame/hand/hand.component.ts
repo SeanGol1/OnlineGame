@@ -4,6 +4,7 @@ import { Card } from 'src/app/models/card';
 @Component({
   selector: 'app-hand',
   templateUrl: './hand.component.html',
+  standalone: false,
   styleUrls: ['./hand.component.css']
 })
 export class HandComponent {

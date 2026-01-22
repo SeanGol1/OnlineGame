@@ -5,6 +5,7 @@ import { SignalRService } from 'src/app/signalr.service';
 @Component({
   selector: 'app-card-scoreboard',
   templateUrl: './card-scoreboard.component.html',
+  standalone: false,
   styleUrls: ['./card-scoreboard.component.css']
 })
 export class CardScoreboardComponent implements AfterViewInit{

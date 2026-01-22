@@ -16,6 +16,7 @@ import { Card, PotCard } from './models/card';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
+  standalone: false,
   styleUrls: ['./app.component.css']
 })
 

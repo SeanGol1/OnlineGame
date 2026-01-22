@@ -5,6 +5,7 @@ import { SignalRService } from 'src/app/signalr.service';
 @Component({
   selector: 'app-pot',
   templateUrl: './pot.component.html',
+  standalone: false,
   styleUrls: ['./pot.component.css']
 })
 export class PotComponent implements OnInit{

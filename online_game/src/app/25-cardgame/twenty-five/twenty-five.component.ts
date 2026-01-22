@@ -12,6 +12,7 @@ import { Question } from '../../Quiz-Game/question';
 @Component({
   selector: 'app-twenty-five',
   templateUrl: './twenty-five.component.html',
+  standalone: false,
   styleUrls: ['./twenty-five.component.css']
 })
 export class TwentyFiveComponent {

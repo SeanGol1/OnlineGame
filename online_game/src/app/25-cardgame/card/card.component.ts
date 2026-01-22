@@ -5,6 +5,7 @@ import { SignalRService } from 'src/app/signalr.service';
 @Component({
   selector: 'app-card',
   templateUrl: './card.component.html',
+  standalone: false,
   styleUrls: ['./card.component.css']
 })
 

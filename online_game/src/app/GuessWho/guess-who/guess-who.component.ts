@@ -7,6 +7,7 @@ import { Player } from 'src/app/player';
 @Component({
   selector: 'app-guess-who',
   templateUrl: './guess-who.component.html',
+  standalone: false,
   styleUrls: ['./guess-who.component.css']
 })
 export class GuessWhoComponent{
