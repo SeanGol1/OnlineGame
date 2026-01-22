@@ -171,11 +171,11 @@ namespace Online_Game_API
             await Clients.All.DisplayMessage("");
 
             if (session.CurrentRound == 1)
-                session.RoundName = session.GetRounds()[2];
+                session.RoundName = session.GetRounds()[0];
             else if (session.CurrentRound == 6)
                 session.RoundName = session.GetRounds()[1];
             else if (session.CurrentRound == 11)
-                session.RoundName = session.GetRounds()[0];
+                session.RoundName = session.GetRounds()[2];
             else if (session.CurrentRound == 16)
                 session.RoundName = session.GetRounds()[3];
             else if (session.CurrentRound == 21)
