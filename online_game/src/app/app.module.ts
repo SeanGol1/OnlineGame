@@ -77,7 +77,7 @@ import { CountriesComponent } from './Quiz-Game/countries/countries.component';
     BrowserModule,
     RouterModule,
     AppRoutingModule,
-    BrowserAnimationsModule,
+    // BrowserAnimationsModule,
     MatProgressBarModule, 
     FormsModule,    
     MatFormFieldModule, 
